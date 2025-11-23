@@ -1,0 +1,27 @@
+{
+  "name": "timetable-ocr-platform",
+  "version": "1.0.0",
+  "description": "AI-powered timetable extraction and visualization platform",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "setup": "npm install --workspaces",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start:backend": "cd backend && npm start",
+    "build:frontend": "cd frontend && npm run build"
+  },
+  "keywords": [
+    "timetable",
+    "ocr",
+    "ai",
+    "openai",
+    "education"
+  ],
+  "author": "",
+  "license": "MIT"
+}
+
