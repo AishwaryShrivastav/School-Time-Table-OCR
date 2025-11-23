@@ -1,0 +1,251 @@
+.file-upload-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.upload-card {
+  background: white;
+  border-radius: 16px;
+  padding: 2.5rem;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+}
+
+.upload-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.upload-header h2 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.upload-header p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+/* Dropzone */
+.dropzone {
+  border: 3px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--bg-color);
+  margin-bottom: 2rem;
+}
+
+.dropzone:hover {
+  border-color: var(--primary-light);
+  background: rgba(79, 70, 229, 0.02);
+}
+
+.dropzone.dragging {
+  border-color: var(--primary-color);
+  background: rgba(79, 70, 229, 0.05);
+  transform: scale(1.01);
+}
+
+.dropzone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.upload-icon {
+  font-size: 4rem;
+  margin-bottom: 0.5rem;
+}
+
+.dropzone h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.dropzone p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.btn-outline {
+  background: white;
+  color: var(--primary-color);
+  border: 2px solid var(--primary-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-outline:hover {
+  background: var(--primary-color);
+  color: white;
+}
+
+.file-info {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* File Preview */
+.file-preview {
+  margin-bottom: 2rem;
+}
+
+.file-info-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--bg-color);
+  padding: 1.25rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  border: 2px solid var(--border-color);
+}
+
+.file-icon {
+  font-size: 2.5rem;
+  flex-shrink: 0;
+}
+
+.file-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-details h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-details p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.btn-remove {
+  background: var(--error-color);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-remove:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+/* Progress */
+.progress-container {
+  margin-bottom: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: var(--border-color);
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-color), var(--primary-light));
+  border-radius: 999px;
+  transition: width 0.3s ease;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.progress-text {
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Upload Actions */
+.upload-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.upload-actions .btn {
+  padding: 0.875rem 2rem;
+  font-size: 1.125rem;
+}
+
+/* Features Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-color);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.feature-icon {
+  font-size: 2rem;
+}
+
+.feature-item span:last-child {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .upload-card {
+    padding: 1.5rem;
+  }
+
+  .dropzone {
+    padding: 2rem 1rem;
+  }
+
+  .upload-icon {
+    font-size: 3rem;
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
