@@ -16,6 +16,35 @@ function getOpenAIClient() {
 }
 
 /**
+ * Safely parse JSON response from OpenAI
+ */
+function safeJSONParse(content) {
+  try {
+    // First, try direct parsing
+    return JSON.parse(content);
+  } catch (error) {
+    console.error('Initial JSON parse failed:', error.message);
+    
+    try {
+      // Try to clean up the content
+      let cleaned = content.trim();
+      
+      // Remove any markdown code blocks if present
+      cleaned = cleaned.replace(/```json\s*/g, '').replace(/```\s*/g, '');
+      
+      // Try parsing again
+      return JSON.parse(cleaned);
+    } catch (secondError) {
+      console.error('Cleaned JSON parse also failed:', secondError.message);
+      console.error('Problematic content (first 500 chars):', content.substring(0, 500));
+      console.error('Problematic content (last 500 chars):', content.substring(Math.max(0, content.length - 500)));
+      
+      throw new Error(`Failed to parse JSON response: ${secondError.message}`);
+    }
+  }
+}
+
+/**
  * Extract timetable data from various file formats
  */
 export async function extractTimetable(file) {
@@ -23,25 +52,30 @@ export async function extractTimetable(file) {
 
   let extractedData;
 
-  switch (fileExtension) {
-    case '.jpg':
-    case '.jpeg':
-    case '.png':
-      extractedData = await extractFromImage(file);
-      break;
-    case '.pdf':
-      extractedData = await extractFromPDF(file);
-      break;
-    case '.docx':
-    case '.doc':
-      extractedData = await extractFromDOCX(file);
-      break;
-    default:
-      throw new Error('Unsupported file format');
-  }
+  try {
+    switch (fileExtension) {
+      case '.jpg':
+      case '.jpeg':
+      case '.png':
+        extractedData = await extractFromImage(file);
+        break;
+      case '.pdf':
+        extractedData = await extractFromPDF(file);
+        break;
+      case '.docx':
+      case '.doc':
+        extractedData = await extractFromDOCX(file);
+        break;
+      default:
+        throw new Error('Unsupported file format');
+    }
 
-  // Post-process to apply recurring blocks and handle inheritance
-  return postProcessTimetable(extractedData);
+    // Post-process to apply recurring blocks and handle inheritance
+    return postProcessTimetable(extractedData);
+  } catch (error) {
+    console.error('Extraction error:', error);
+    throw error;
+  }
 }
 
 /**
@@ -198,7 +232,7 @@ async function extractFromImage(file) {
         content: [
           {
             type: "text",
-            text: `Extract the complete timetable information from this image. Follow these critical rules:
+            text: `Extract the complete timetable information from this image and return it as a valid JSON object. Follow these critical rules:
 
 **EXTRACTION RULES:**
 
@@ -257,7 +291,14 @@ async function extractFromImage(file) {
 - Preserve original event names exactly as written
 - Note any special formatting or colors used
 - If a block spans multiple time slots, calculate the correct duration
-- Look for patterns across days to identify recurring blocks`
+- Look for patterns across days to identify recurring blocks
+
+**JSON FORMATTING RULES:**
+- Return ONLY valid JSON, no markdown code blocks
+- Escape all special characters in strings (quotes, newlines, backslashes)
+- Use double quotes for all property names and string values
+- Ensure all strings are properly terminated
+- Do not include any text outside the JSON object`
           },
           {
             type: "image_url",
@@ -268,12 +309,13 @@ async function extractFromImage(file) {
         ]
       }
     ],
-    max_tokens: 4000,
+    max_tokens: 8000,
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 
   const content = response.choices[0].message.content;
-  return JSON.parse(content);
+  return safeJSONParse(content);
 }
 
 /**
@@ -296,7 +338,7 @@ async function extractFromPDF(file) {
       },
       {
         role: "user",
-        content: `Extract comprehensive timetable information from this text:
+        content: `Extract comprehensive timetable information from this text and return it as a valid JSON object:
 
 ${textContent}
 
@@ -341,15 +383,23 @@ ${textContent}
   ]
 }
 
-Extract EVERY block accurately with all timing details.`
+Extract EVERY block accurately with all timing details.
+
+**JSON FORMATTING RULES:**
+- Return ONLY valid JSON, no markdown code blocks
+- Escape all special characters in strings (quotes, newlines, backslashes)
+- Use double quotes for all property names and string values
+- Ensure all strings are properly terminated
+- Do not include any text outside the JSON object`
       }
     ],
-    max_tokens: 4000,
+    max_tokens: 8000,
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 
   const content = response.choices[0].message.content;
-  return JSON.parse(content);
+  return safeJSONParse(content);
 }
 
 /**
@@ -371,7 +421,7 @@ async function extractFromDOCX(file) {
       },
       {
         role: "user",
-        content: `Extract comprehensive timetable information from this Word document text:
+        content: `Extract comprehensive timetable information from this Word document text and return it as a valid JSON object:
 
 ${textContent}
 
@@ -419,14 +469,22 @@ ${textContent}
   ]
 }
 
-Be thorough - extract EVERYTHING with accurate timing.`
+Be thorough - extract EVERYTHING with accurate timing.
+
+**JSON FORMATTING RULES:**
+- Return ONLY valid JSON, no markdown code blocks
+- Escape all special characters in strings (quotes, newlines, backslashes)
+- Use double quotes for all property names and string values
+- Ensure all strings are properly terminated
+- Do not include any text outside the JSON object`
       }
     ],
-    max_tokens: 4000,
+    max_tokens: 8000,
+    temperature: 0.1,
     response_format: { type: "json_object" }
   });
 
   const content = response.choices[0].message.content;
-  return JSON.parse(content);
+  return safeJSONParse(content);
 }
 
